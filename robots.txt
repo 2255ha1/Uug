@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /private/
+Allow: /
+
+# This is a standard robots file for a media streaming site
+Sitemap: https://your-site-name.netlify.app/sitemap.xml
